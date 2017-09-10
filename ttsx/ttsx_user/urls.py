@@ -3,6 +3,5 @@ from . import views
 
 urlpatterns = [
   url('^register/$',views.register),
-  url('^zs/$',views.zhanshi),
 ]
 
