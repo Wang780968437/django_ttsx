@@ -6,5 +6,4 @@ from django.shortcuts import render
 def register(request):
     return render(request,'ttsx_user/register.html')
 
-def zhanshi(request):
-    return HttpResponse('zhanshi')
+
