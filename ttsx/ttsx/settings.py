@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'ttsx_user',
     'tt_goods',
     'tinymce',
+    'tt_order',
 )
 
 MIDDLEWARE_CLASSES = (
