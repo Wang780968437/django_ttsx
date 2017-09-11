@@ -3,6 +3,30 @@
 <title>天天生鲜-购物车</title>
 {% endblock title%}
 
+{% block head%}
+<script>
+	$(function () {
+	    var cart_list_th = $('.cart_list_th')
+//		ul = $('<ul class="cart_list_td clearfix">')
+//		ul.append(
+//	        '<li class="col01"><input type="checkbox" name="" checked></li> <li class="col02"><img src="{{goods_detail_pic}}"></li> <li class="col03">{{good_name}}<br><em>{{show_pirze}}/500g</em></li> <li class="col04">500g</li> <li class="col05">{{show_pirze}}*{{num_show}}元</li> <li class="col06"> <div class="num_add"> <a href="javascript:;" class="add fl">+</a> <input type="text" class="num_show fl" value="1"> <a href="javascript:;" class="minus fl">-</a> </div> </li> <li class="col07">16.80元</li> <li class="col08"><a href="javascript:;">删除</a></li>'
+//				)
+//		cart_list_th.after(ul)
+
+//		$.get('#',function (data) {
+//
+//			$.each(data.list, function (i, item) {
+//			    ul = $('<ul class="cart_list_td clearfix">')
+//				ul.append(
+//				    '<li class="col01"><input type="checkbox" name="" checked></li> <li class="col02"><img src="/static/images/goods/goods003.jpg"></li> <li class="col03">大兴大棚草莓<br><em>16.80元/500g</em></li> <li class="col04">500g</li> <li class="col05">16.80元</li> <li class="col06"> <div class="num_add"> <a href="javascript:;" class="add fl">+</a> <input type="text" class="num_show fl" value="1"> <a href="javascript:;" class="minus fl">-</a> </div> </li> <li class="col07">16.80元</li> <li class="col08"><a href="javascript:;">删除</a></li>'
+//				)
+//				cart_list_th.after(ul)
+//            })
+//        })
+//    })
+</script>
+{% endblock head %}
+
 {% block body%}
 	<div class="header_con">
 		<div class="header">
@@ -85,7 +109,7 @@
 		<li class="col01"><input type="checkbox" name="" checked=""></li>
 		<li class="col02">全选</li>
 		<li class="col03">合计(不含运费)：<span>¥</span><em>42.60</em><br>共计<b>2</b>件商品</li>
-		<li class="col04"><a href="place_order.html">去结算</a></li>
+		<li class="col04"><a href="/tt_order/to_pay/">去结算</a></li>
 	</ul>
 {% endblock body %}
 
