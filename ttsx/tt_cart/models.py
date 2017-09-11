@@ -1,6 +1,7 @@
 from django.db import models
 
 # Create your models here.
+
 class CartInfo(models.Model):
     #用户
     #商品
@@ -10,3 +11,4 @@ class CartInfo(models.Model):
     count=models.IntegerField()
 
     # 谁买了什么
+
