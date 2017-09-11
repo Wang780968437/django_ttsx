@@ -1,3 +1,4 @@
+
 from django.http import HttpResponse
 from django.shortcuts import render
 
@@ -17,3 +18,11 @@ def add_cart(request):
     context = {'good_name': good_name, 'show_pirze': show_pirze, 'num_show': num_show, 'goods_detail_pic': goods_detail_pic}
 
     return render(request, 'tt_cart/cart.html', context)
+
+from django.shortcuts import render
+
+# Create your views here.
+
+def cart(request):
+    return render(request, 'tt_cart/')
+
