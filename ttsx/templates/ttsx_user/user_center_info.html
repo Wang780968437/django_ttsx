@@ -24,7 +24,7 @@
 			<div class="welcome fl">欢迎来到天天生鲜!</div>
 			<div class="fr">
 				<div class="login_info fl">
-					欢迎您：<em id="user">张 山</em>
+					欢迎您：<em id="user"></em>
 				</div>
 				<div class="login_btn fl">
 					<a href="login.html">登录</a>
@@ -33,7 +33,7 @@
 				</div>
 				<div class="user_link fl">
 					<span>|</span>
-					<a href="user_center_info.html">用户中心</a>
+					<a href="/user/user_center_info/">用户中心</a>
 					<span>|</span>
 					<a href="cart.html">我的购物车</a>
 					<span>|</span>
@@ -65,8 +65,8 @@
 				<div class="info_con clearfix">
 				<h3 class="common_title2">基本信息</h3>
 						<ul class="user_info_list">
-							<li><span>用户名：</span>18210569700</li>
-							<li><span>联系方式：</span>18210569700</li>
+							<li><span>用户名：</span>{{ user_name }}</li>
+							<li><span>电子邮箱：</span>{{ user_email }}</li>
 							<li><span>联系地址：</span>北京市昌平区</li>			
 						</ul>
 				</div>

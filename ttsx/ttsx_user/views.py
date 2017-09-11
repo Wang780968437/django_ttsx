@@ -1,3 +1,4 @@
+#codding=utf-8
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.http import JsonResponse
@@ -51,13 +52,27 @@ def active(request):
     return HttpResponse('激活')
 
 def user_center_info(request):
-    return render(request, 'ttsx_user/user_center_info.html')
+    user_email = UserInfo.objects.get(id = request.session['user_id']).uemail
+    context = {'title':'用户中心', 'user_email':user_email, 'user_name':request.session['user_name']}
+    return render(request, 'ttsx_user/user_center_info.html',context)
 
 def user_center_order(request):
-    return render(request, 'ttsx_user/user_center_order.html')
+    context = {'title':'用户中心'}
+    return render(request, 'ttsx_user/user_center_order.html',context)
 
 def user_center_site(request):
-    return render(request, 'ttsx_user/user_center_site.html')
+    u_info = UserAddressInfo.objects.get(user_id = request.session['user_id'])
+    ucode = ''
+    if request.method == 'POST':
+        post = request.POST
+        u_info.uname = post.get('user')
+        u_info.uaddress = post.get('uaddress')
+        u_info.uphone = post.get('uphone')
+        u_info.save()
+        ucode = post.get('ucode')
+
+    context = {'title':'用户中心', 'user':u_info, 'ucode':ucode}
+    return render(request, 'ttsx_user/user_center_site.html',context)
 
 def user_login_verify(request):
     post = request.POST
