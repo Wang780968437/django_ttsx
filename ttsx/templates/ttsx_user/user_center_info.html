@@ -1,6 +1,21 @@
 {%extends 'base.html'%}
 {%block head%}
 	<title>天天生鲜-用户中心</title>
+    <script>
+        $(function () {
+           var uname = $.cookie('name');
+           if(uname == ''){
+               $('.login_info').hide();
+               $('.login_btn').show();
+           }else {
+               $('#user').html(uname);
+               $('.login_info').show();
+               $('.login_btn').hide();
+           }
+        });
+
+
+    </script>
 {%endblock head%}
 
 {%block body%}
@@ -9,7 +24,7 @@
 			<div class="welcome fl">欢迎来到天天生鲜!</div>
 			<div class="fr">
 				<div class="login_info fl">
-					欢迎您：<em>张 山</em>
+					欢迎您：<em id="user">张 山</em>
 				</div>
 				<div class="login_btn fl">
 					<a href="login.html">登录</a>
