@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.conf import settings
@@ -35,7 +36,9 @@ def add_user(request):
     return redirect('/user/login/')
 
 def login(request):
-    return render(request,'ttsx_user/login.html')
+    uname = request.COOKIES.get('uname','')
+    context = {'title':'用户登陆', 'error_name':0, 'error_pwd':0, 'uname': uname}
+    return render(request, 'ttsx_user/login.html', context)
 
 def send(request):
     msg='<a href="http://127.0.0.1/active/" target="_blank">点击激活</a>'
@@ -57,21 +60,33 @@ def user_center_site(request):
     return render(request, 'ttsx_user/user_center_site.html')
 
 def user_login_verify(request):
-    user_name = request.POST.get('username')
-    user_pwd = request.POST.get('pwd').encode()
-    s1 = sha1()
-    s1.update(user_pwd)
-    supwd = s1.hexdigest()
+    post = request.POST
+    name = post.get('username')
+    upwd = post.get('pwd').encode()
+    jizhu = post.get('jizhu',0)
 
-    user_list = UserInfo.objects.all()
-    for u in user_list:
-        if (u.uname == user_name and u.upwd == supwd):
-            response = redirect('/user/user_center_info/')
-            response.set_cookie('name',user_name)
+    users = UserInfo.objects.filter(uname = name)
+    if len(users) == 1:
+        s1 = sha1()
+        s1.update(upwd)
+        supwd = s1.hexdigest()
+        if supwd == users[0].upwd:
+            response = HttpResponseRedirect('/user/user_center_info/')
+            if jizhu != 0:
+                response.set_cookie('uname',name)
+            else:
+                response.set_cookie('uname','',max_age=-1)
+            request.session['user_id'] = users[0].id
+            request.session['user_name'] = name
             return response
 
-    return HttpResponse('用户名或密码错误')
+        else:
+            context = {'title':'用户登陆','error_name':0,'error_pwd':1,'uname':name,'upwd':upwd}
+            return render(request,'ttsx_user/login.html',context)
 
+    else:
+        context = {'title': '用户登陆', 'error_name': 1, 'error_pwd': 0, 'uname': name, 'upwd': upwd}
+        return render(request, 'ttsx_user/login.html', context)
 
 
 
