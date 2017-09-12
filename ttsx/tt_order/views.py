@@ -7,7 +7,7 @@ from .models import *
 
 # 从购物车提交订单后转到确认订单页面
 def verify_order(request):
-
+    goods = request.GET.get("gtitle")
 
     return render(request,"tt_order/place_order.html")
 
