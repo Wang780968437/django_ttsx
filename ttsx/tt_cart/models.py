@@ -12,3 +12,4 @@ class CartInfo(models.Model):
 
     # 谁买了什么
 
+

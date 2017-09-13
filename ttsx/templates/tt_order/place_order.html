@@ -116,24 +116,24 @@
 	<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
 	<script type="text/javascript">
 		$(function () {
-            $('#order_btn').click(function() {
+
+		    $('#order_btn').click(function() {
                 localStorage.setItem('order_finish',2);
-                $.get('/order_list/',function (data) {
+                $.get('/tt_order/order_list/',function (data) {
 
-                });
+                    if(data.ok == 'ok'){
+                        $('.popup_con').fadeIn('fast', function() {
 
-
-                $('.popup_con').fadeIn('fast', function() {
-
-                    setTimeout(function(){
-                        $('.popup_con').fadeOut('fast',function(){
-                            window.location.href = 'index.html';
+                            setTimeout(function(){
+                                $('.popup_con').fadeOut('fast',function(){
+                                    window.location.href = '/tt_order/all_order/';
+                                });
+                            },3000)
                         });
-                    },3000)
-
+                    }
                 });
             });
-          });
+        });
 	</script>
 
 {% endblock body %}
