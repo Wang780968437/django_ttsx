@@ -134,3 +134,9 @@ EMAIL_HOST_USER = 'itcast88@163.com'
 EMAIL_HOST_PASSWORD = 'python808'
 #收件人看到的发件人
 EMAIL_FROM = 'python<itcast88@163.com>'
+
+
+import djcelery
+djcelery.setup_loader()
+BROKER_URL = 'redis://127.0.0.1:6379/2'
+CELERY_IMPORTS = ('ttsx_user.task',)

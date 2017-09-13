@@ -9,6 +9,7 @@ from django.core.mail import send_mail
 from hashlib import sha1
 from .models import *
 from . import user_decorator
+from . import task
 
 # Create your views here.
 
@@ -36,11 +37,13 @@ def add_user(request):
     user.uemail = uemail
     user.save()
 
-    msg = '<a href="http://127.0.0.1:8000/user/active%s/" target="_blank">点击激活</a>'%(user.id)
-    send_mail('天天生鲜用户激活', '',
-              settings.EMAIL_FROM,
-              [uemail],
-              html_message=msg)
+    task.sendmail.delay(user.id,uemail)
+
+    # msg = '<a href="http://127.0.0.1:8000/user/active%s/" target="_blank">点击激活</a>'%(user.id)
+    # send_mail('天天生鲜用户激活', '',
+    #           settings.EMAIL_FROM,
+    #           [uemail],
+    #           html_message=msg)
 
     # return HttpResponse('用户注册成功，请到邮箱中激活！')
     return redirect('/user/login_1/')
