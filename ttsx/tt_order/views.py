@@ -29,7 +29,7 @@ def order_list(request):
 def all_order(request):
 
     # 获取登录的用户名
-    uid=request.session.get('user_id')
+    name=request.session.get('user_name')
     print(name)
     # 根据当前登陆的用户名，获取用户所有订单信息
     orderinfolist = OrderInfo.objects.filter(user__uname = name)
