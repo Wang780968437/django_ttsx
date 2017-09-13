@@ -1,41 +1,20 @@
-{%extends 'base.html'%}
+{%extends 'base_top.html'%}
+
 {%block head%}
-<title>天天生鲜-用户中心</title>
+    <script>
+        $(function () {
+            if({{ count}} == 0){
+                $('#address').hide();
+                $('#add_address').show();
+            }else {
+                $('#address').show();
+                $('#add_address').hide();
+            }
+        });
+    </script>
 {%endblock head%}
 
-{%block body%}
-	<div class="header_con">
-		<div class="header">
-			<div class="welcome fl">欢迎来到天天生鲜!</div>
-			<div class="fr">
-				<div class="login_info fl">
-					欢迎您：<em>张 山</em>
-				</div>
-				<div class="login_btn fl">
-					<a href="login.html">登录</a>
-					<span>|</span>
-					<a href="register.html">注册</a>
-				</div>
-				<div class="user_link fl">
-					<span>|</span>
-					<a href="user_center_info.html">用户中心</a>
-					<span>|</span>
-					<a href="cart.html">我的购物车</a>
-					<span>|</span>
-					<a href="user_center_order.html">我的订单</a>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="search_bar clearfix">
-		<a href="index.html" class="logo fl"><img src="/static/images/logo.png"></a>
-		<div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;用户中心</div>
-		<div class="search_con fr">
-			<input type="text" class="input_text fl" name="" placeholder="搜索商品">
-			<input type="button" class="input_btn fr" name="" value="搜索">
-		</div>
-	</div>
+{%block center%}
 
 	<div class="main_con clearfix">
 		<div class="left_menu_con clearfix">
@@ -51,34 +30,35 @@
 				<div class="site_con">
 					<dl>
 						<dt>当前地址：</dt>
-						<dd>北京市 海淀区 东北旺西路8号中关村软件园 （李思 收） 182****7528</dd>
+						<dd id="address"> {{ user.uaddress }} （ {{ user.uname }} 收）  {{ user.uphone }}</dd>
+                        <dd id="add_address" style="color: #ff8800">您还没有添加收货地址，请点击下面“编辑地址”进行添加！</dd>
 					</dl>					
 				</div>
 				<h3 class="common_title2">编辑地址</h3>
 				<div class="site_con">
-					<form>
+					<form action="/user/user_center_site/" method="post">
 						<div class="form_group">
 							<label>收件人：</label>
-							<input type="text" name="">
+							<input type="text" name="user" value="{{ user.uname }}">
 						</div>
 						<div class="form_group form_group2">
 							<label>详细地址：</label>
-							<textarea class="site_area"></textarea>
+							<textarea class="site_area" name="uaddress">{{ user.uaddress }}</textarea>
 						</div>
 						<div class="form_group">
 							<label>邮编：</label>
-							<input type="text" name="">
+							<input type="text" name="ucode" value="{{ user.ucode }}">
 						</div>
 						<div class="form_group">
 							<label>手机：</label>
-							<input type="text" name="">
+							<input type="text" name="uphone" value="{{ user.uphone }}">
 						</div>
 
-						<input type="submit" name="" value="提交" class="info_submit">
+						<input type="submit"  value="提交" class="info_submit">
 					</form>
 				</div>
 		</div>
 	</div>
 
-{%endblock body%}
+{%endblock center%}
 
