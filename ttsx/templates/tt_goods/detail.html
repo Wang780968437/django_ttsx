@@ -147,6 +147,13 @@
 
 		$(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'})
 		$('#add_cart').click(function(){
+		    //判断是否登陆，未登录的话提示先登陆
+            if($('.login_btn').text().indexOf('登录')>=0) {
+                alert('请登录后再购买');
+                location.href='/user/login/';
+                return;
+            }
+            //动画
 			$(".add_jump").stop().animate({
 				'left': $to_y+7,
 				'top': $to_x+7},
@@ -154,8 +161,14 @@
 					$(".add_jump").fadeOut('fast',function(){
 						$('#show_count').html(2);
 					});
-
 			});
+
+            //异步
+            num=parseInt($('.num_show').val());
+            $.get('/cart/add{{ g.id }}_'+num+'/',function(data) {
+                $('show_count').text(data_count);
+            });
+
 		})
 	</script>
 	

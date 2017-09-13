@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^tinymce/',include('tinymce.urls')),
     url(r'^tt_goods/',include('tt_goods.urls')),
     url(r'^tt_order/',include('tt_order.urls')),
+    url(r'^tt_cart/', include('tt_cart.urls')),
 
 
 
