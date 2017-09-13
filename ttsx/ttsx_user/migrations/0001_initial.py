@@ -13,28 +13,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UserAddressInfo',
             fields=[
-<<<<<<< HEAD
-                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
-                ('uname', models.CharField(max_length=20)),
-                ('uaddress', models.CharField(max_length=100)),
-                ('uphone', models.CharField(max_length=11)),
-=======
                 ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
                 ('uname', models.CharField(max_length=20)),
                 ('uaddress', models.CharField(max_length=100)),
                 ('uphone', models.CharField(max_length=11)),
 
->>>>>>> dev
             ],
         ),
         migrations.CreateModel(
             name='UserInfo',
             fields=[
-<<<<<<< HEAD
-                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
-=======
                 ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
->>>>>>> dev
                 ('uname', models.CharField(max_length=20)),
                 ('upwd', models.CharField(max_length=40)),
                 ('uemail', models.CharField(max_length=30)),
