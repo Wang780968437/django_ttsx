@@ -394,7 +394,7 @@ html,body{height:100%}
 .settlements .col03 b{color:#ff0000;font-size:14px;padding:0 5px;}
 
 .settlements .col04{width:14%;text-align:center;float:right;}
-.settlements .col04 a{display:block;height:78px;background-color:#ff3d3d;text-align:center;line-height:78px;color:#fff;font-size:24px}
+.settlements .col04 input{display:block;height:78px;background-color:#ff3d3d;text-align:center;line-height:78px;color:#fff;font-size:24px;width:100%;border:none;}
 
 
 .common_title{width:1200px;margin:20px auto 0;font-size:14px;}
@@ -557,11 +557,59 @@ html,body{height:100%}
 	font-size:14px;
 }
 
+
+
+
 .user_info_list li span{
 	width:100px;
 	float:left;
 	text-align:right;
 }
+
+
+.user_info_list li lable{
+	width:100px;
+	float:left;
+	text-align:right;
+	margin-left: 50px;
+}
+
+.user_info_list li .pwd{
+	height: 20px;
+	outline: none;
+	border: 1px solid #e0e0e0;
+	text-indent: 5px;
+}
+
+.user_info_list li p:hover{
+	cursor: pointer;
+	color: #ff8800;
+	width: 100px;
+}
+
+.user_info_list li em{
+	color:#f00;
+	font-size: 12px;
+	font-style: normal;
+	margin-left: 20px;
+	display: none;
+}
+
+.user_info_list .show_pwd{
+	display: none;
+}
+
+.user_info_list .subbtn,.user_info_list .quxiao{
+	border: 1px solid #e0e0e0;
+	outline: none;
+	height: 25px;
+    width: 70px;
+	cursor: pointer;
+}
+
+
+
+
 
 .info_con{
 	width:980px;
