@@ -37,3 +37,5 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(to='ttsx_user.UserInfo'),
         ),
     ]
+
+
