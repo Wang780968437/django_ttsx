@@ -3,6 +3,23 @@
 <title>天天生鲜-商品详情</title>
 {% endblock title%}
 
+{% block head%}
+<script>
+	$(function () {
+		$('.add_cart').click(function () {
+			var $good_name = $('.goods_detail_list h3').html()
+			var $show_pirze = $('.show_pirze em').html()
+			var $num_show = $('.num_show').val()
+			var $goods_detail_pic = $('.goods_detail_pic img').prop('src')
+			var context = {'$good_name': $good_name, '$show_pirze': $show_pirze, '$num_show': $num_show,'$goods_detail_pic': $goods_detail_pic }
+
+			$.get('/cart/add_cart/', context)
+        })
+    })
+
+</script>
+{% endblock head %}
+
 {% block body%}
 	<div class="header_con">
 		<div class="header">
