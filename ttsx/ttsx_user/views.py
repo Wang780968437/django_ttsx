@@ -13,15 +13,19 @@ from . import task
 
 # Create your views here.
 
+
+# 注册
 def register(request):
     return render(request,'ttsx_user/register.html',{'title':'注册'})
 
+# 注册时判断用户名是否存在
 def uname_exist(request):
     name = request.GET.get('name')
     count = UserInfo.objects.filter(uname = name).count()
 
     return JsonResponse({'count':count})
 
+# 用户注册处理，信息保存
 def add_user(request):
     user = UserInfo()
     uname = request.POST.get('user_name').strip()
@@ -48,39 +52,50 @@ def add_user(request):
     # return HttpResponse('用户注册成功，请到邮箱中激活！')
     return redirect('/user/login_1/')
 
+# 仅用于注册时的跳转登陆
 def login_1(request):
     uname = request.COOKIES.get('uname','')
     context = {'title':'用户登陆', 'error_name':0, 'error_pwd':0, 'error_yzm':0, 'uname': uname}
     return render(request, 'ttsx_user/login_1.html', context)
 
 
+# 用户通过邮件激活
 def active(request,uid):
     user = UserInfo.objects.get(id = uid)
     user.isActive = True
     user.save()
     return HttpResponse('激活成功，<a href="/user/login/">点击登录</a>')
 
+# 登陆
 def login(request):
     uname = request.COOKIES.get('uname','')
     context = {'title':'用户登陆', 'error_name':0, 'error_pwd':0, 'error_yzm':0, 'uname': uname}
     return render(request, 'ttsx_user/login.html', context)
 
+# 用户信息
 @user_decorator.login
 def user_center_info(request):
     user_email = UserInfo.objects.get(id = request.session['user_id']).uemail
     context = {'title':'用户中心', 'user_email':user_email, 'user_name':request.session['user_name']}
     return render(request, 'ttsx_user/user_center_info.html',context)
 
+# 用户所有订单
 @user_decorator.login
 def user_center_order(request):
     context = {'title':'用户中心'}
     return render(request, 'ttsx_user/user_center_order.html',context)
 
+# 用户地址信息
 @user_decorator.login
 def user_center_site(request):
     userId = request.session['user_id']
+
+    # 判断用户是否添加过地址
     count = UserAddressInfo.objects.filter(user_id = userId).count()
+
+    # 没有添加，根据请求方式POST，GET分别处理
     if count == 0:
+        # POST请求，保存表单数据到表中，把count=1表示用户已添加地址
         if request.method == 'POST':
             u_info = UserAddressInfo()
             post = request.POST
@@ -93,9 +108,10 @@ def user_center_site(request):
             count = 1
             context = {'title': '用户中心', 'user': u_info,'count':count}
             return render(request, 'ttsx_user/user_center_site.html', context)
-        else:
+        else:# GET 请求直接跳转
             return render(request, 'ttsx_user/user_center_site.html', {'title': '用户中心','count':count})
-    else:
+
+    else:  # 用户已经添加地址，GET 请求直接显示，POST请求，保存用户的修改，显示修改后的新地址
         u_info = UserAddressInfo.objects.get(user_id=userId)
         if request.method == 'GET':
             context = {'title': '用户中心', 'user': u_info,'count':count}
@@ -111,6 +127,7 @@ def user_center_site(request):
             context = {'title': '用户中心', 'user': u_info, 'count': count}
             return render(request, 'ttsx_user/user_center_site.html', context)
 
+# 登陆验证
 def user_login_verify(request):
     post = request.POST
     name = post.get('username')
@@ -119,13 +136,13 @@ def user_login_verify(request):
     yzm_value = post.get('yzm_value')
 
     if yzm_value.lower() == request.session['verifycode'].lower():
-        users = UserInfo.objects.filter(uname = name)
+        users = UserInfo.objects.filter(uname = name)     #  验证用户是否存在
         if len(users) == 1:
             s1 = sha1()
             s1.update(upwd.encode('utf-8'))
             supwd = s1.hexdigest()
             if supwd == users[0].upwd:
-                url = request.COOKIES.get('url','/')
+                url = request.COOKIES.get('url','/user/')
                 response = HttpResponseRedirect(url)
                 if jizhu != 0:
                     response.set_cookie('uname',name)
@@ -133,26 +150,33 @@ def user_login_verify(request):
                     response.set_cookie('uname','',max_age=-1)
                 request.session['user_id'] = users[0].id
                 request.session['user_name'] = name
-                return response
+                return response      #   登陆成功时的跳转
 
-            else:
+            else: #   密码错误时的处理
                 context = {'title':'登陆','error_name':0,'error_pwd':1, 'error_yzm':0, 'uname':name, 'upwd':upwd}
                 return render(request,'ttsx_user/login.html',context)
 
-        else:
+        else:   #   用户名错误时的处理
             context = {'title': '登陆', 'error_name': 1, 'error_pwd':0, 'error_yzm':0, 'uname': name, 'upwd': upwd}
             return render(request, 'ttsx_user/login.html', context)
-    else:
+
+    else:  #验证码错误时的处理
         context =  {'title': '登陆', 'error_name':0, 'error_pwd':0,  'error_yzm':1, 'uname': name, 'upwd': upwd}
         return render(request, 'ttsx_user/login.html', context)
 
+# 退出登陆
 def logout(request):
     request.session.flush()
-    return redirect('/user/')
+    response = HttpResponseRedirect('/user/')
+    response.delete_cookie('url')
+    response.delete_cookie('uname')
+    return response
 
+# 首页
 def index(request):
     return render(request,'ttsx_user/index.html',{'title':'首页'})
 
+# 生成验证码
 def verify_code(request):
     # 引入随机函数模块
     import random
@@ -198,6 +222,32 @@ def verify_code(request):
     im.save(buf, 'png')
     # 将内存中的图片数据返回给客户端，MIME类型为图片png
     return HttpResponse(buf.getvalue(), 'image/png')
+
+# 修改密码
+def pwd_handle(request):
+    dict = request.POST
+    new_pwd = dict.get('newPwd')
+
+    u_name = request.session['user_name']
+    user = UserInfo.objects.get(uname=u_name)
+
+    s1 = sha1()
+    s1.update(new_pwd.encode('utf-8'))
+    supwd = s1.hexdigest()
+
+    user.upwd = supwd;
+    user.save()
+    request.session.flush()
+    response = HttpResponseRedirect('/user/login/')
+    response.set_cookie('url','/user/user_center_info/')
+    return response
+
+
+
+
+
+
+
 
 
 

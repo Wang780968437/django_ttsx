@@ -1,5 +1,76 @@
 {%extends 'base_top.html'%}
 
+{% block head %}
+
+    <script>
+        $(function () {
+            $('#changePwd').click(function () {
+               $('#showPwd').show();
+               $('.user_info_list').css({'height':170})
+            });
+
+            var error_new_Pwd = false;
+            var error_new_rPwd = false;
+
+            $('#new_Pwd').blur(function () {
+                if($.trim($('#new_Pwd').val())==''){
+                    $('#newPwd').show().html('不能为空');
+                    error_new_Pwd = true;
+                }else {
+                    error_new_Pwd = false;
+                    $('#newPwd').hide();
+                }
+
+            });
+
+
+
+            $('#new_rPwd').blur(function () {
+                if($.trim($('#new_rPwd').val())==''){
+                    $('#newrPwd').show().html('不能为空');
+                    error_new_rPwd = true;
+                }else{
+                    $('#newrPwd').hide();
+                    if($.trim($('#new_rPwd').val())!=$.trim($('#new_Pwd').val())){
+                        $('#newrPwd').show().html('两次密码输入不一致');
+                        error_new_rPwd = true;
+                    }else{
+                        error_new_rPwd = false;
+                        $('#newrPwd').hide();
+                    }
+                }
+
+            });
+
+            $('.quxiao').click(function () {
+                 $('#showPwd').hide();
+                 $('.user_info_list').css({'height':90});
+
+                 $('#old_Pwd').val('');
+                 $('#new_rPwd').val('');
+                 $('#new_Pwd').val('');
+
+                 $('#newrPwd').hide();
+                 $('#oldPwd').hide();
+                 $('#newPwd').hide();
+            });
+
+            $('#formPwd').submit(function () {
+                if(error_new_rPwd==false && error_new_Pwd==false){
+                    $('#showPwd').hide();
+                    $('.user_info_list').css({'height':90});
+                    return true;
+                }else{
+                    return false;
+                }
+            });
+
+        });
+
+    </script>
+
+{% endblock head %}
+
 {%block center%}
 
 	<div class="main_con clearfix">
@@ -17,6 +88,18 @@
 						<ul class="user_info_list">
 							<li><span>用户名：</span>{{ user_name }}</li>
 							<li><span>电子邮箱：</span>{{ user_email }}</li>
+                            <li class="clearfix">
+                                <p id="changePwd">修改密码：</p>
+                            </li>
+                            <form action="/user/pwd_handle/" method="post" id="formPwd">
+                                <div id="showPwd" class="show_pwd">
+                                    <li><lable>新密码：</lable><input type="password" class="pwd" name="newPwd" id="new_Pwd"><em id="newPwd">输入错误</em></li>
+                                    <li><lable>确认密码：</lable><input type="password" class="pwd" name="newrPwd" id="new_rPwd"><em id="newrPwd">输入错误</em></li>
+                                    <li><input type="submit" value="确认修改" style="margin-left: 80px" class="subbtn">
+                                        <input type="button" value="取消修改" style="margin-left: 30px" class="quxiao">
+                                    </li>
+                                </div>
+                           </form>
 						</ul>
 				</div>
 				

@@ -15,5 +15,6 @@ urlpatterns = [
   url('^logout/$',views.logout),
   url('^$',views.index),
   url('^verify_code/$',views.verify_code),
+  url('^pwd_handle/$',views.pwd_handle),
 ]
 
