@@ -6,7 +6,7 @@ class OrderInfo(models.Model):
     # 订单编号
     oid = models.CharField(max_length=20,primary_key=True)
     # 订单用户,来自用户信息表
-    # user = models.ForeignKey('ttsx_user.UserInfo')
+    user = models.ForeignKey('ttsx_user.UserInfo')
     # 下单日期
     odate = models.DateTimeField(auto_now_add=True)
     # 是否支付
@@ -19,7 +19,7 @@ class OrderInfo(models.Model):
 
 class OrderDetailInfo(models.Model):
     # 商品
-    # goods = models.ForeignKey('tt_goods.GoodsInfo')
+    goods = models.ForeignKey('tt_goods.GoodsInfo')
     # 订单
     order = models.ForeignKey(OrderInfo)
     # 价格
