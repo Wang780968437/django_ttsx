@@ -2,10 +2,11 @@
 from django.http import JsonResponse
 from django.shortcuts import render,redirect
 from .models import *
-# from ttsx_user import user_decorator
+
+from ttsx_user import user_decorator
 # Create your views here.
 
-# @user_decorator.lohin
+@user_decorator.login
 def index(request):
     uid=request.session['user_id']
     carts=CartInfo.objects.filter(user_id=uid)
@@ -15,7 +16,7 @@ def index(request):
 
     return render(request, 'tt_cart/cart.html',context)
 
-# @user_decorator.login
+@user_decorator.login
 def add(request,gid,count):
     uid=request.session['user_id']
     gid=int(gid)
@@ -38,7 +39,7 @@ def add(request,gid,count):
     else:
         return redirect('/cart/')
 
-# @user_decorator.login
+@user_decorator.login
 def edit(request,cart_id,count):
     try:
         cart=CartInfo.objects.get(pk=(cart_id))
@@ -49,7 +50,7 @@ def edit(request,cart_id,count):
         data={'ok':count1}
     return JsonResponse(data)
 
-# @user_decorator.login
+@user_decorator.login
 def delete(request,cart_id):
     try:
         cart=CartInfo.objects.get(pk=(cart_id))
