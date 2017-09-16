@@ -15,6 +15,7 @@ class Migration(migrations.Migration):
             name='GoodsInfo',
             fields=[
 
+
                 ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
 
 
@@ -22,9 +23,7 @@ class Migration(migrations.Migration):
                 ('gpic', models.ImageField(upload_to='goods')),
                 ('gprice', models.DecimalField(decimal_places=2, max_digits=5)),
                 ('isDelete', models.BooleanField(default=False)),
-
                 ('gunit', models.CharField(default='500g', max_length=20)),
-
                 ('gclick', models.IntegerField()),
                 ('gjianjie', models.CharField(max_length=200)),
                 ('gkucun', models.IntegerField()),
@@ -35,8 +34,10 @@ class Migration(migrations.Migration):
             name='TypeInfo',
             fields=[
 
+
                 ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
 
+                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
 
                 ('ttitle', models.CharField(max_length=20)),
                 ('isDelete', models.BooleanField(default=False)),

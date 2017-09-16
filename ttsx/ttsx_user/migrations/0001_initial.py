@@ -13,17 +13,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UserAddressInfo',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
+                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
                 ('uname', models.CharField(max_length=20)),
                 ('uaddress', models.CharField(max_length=100)),
                 ('uphone', models.CharField(max_length=11)),
-
+                ('ucode', models.CharField(null=True, max_length=30)),
             ],
         ),
         migrations.CreateModel(
             name='UserInfo',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
+                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
                 ('uname', models.CharField(max_length=20)),
                 ('upwd', models.CharField(max_length=40)),
                 ('uemail', models.CharField(max_length=30)),
@@ -37,5 +37,3 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(to='ttsx_user.UserInfo'),
         ),
     ]
-
-
