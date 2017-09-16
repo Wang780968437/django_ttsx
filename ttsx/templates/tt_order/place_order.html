@@ -8,19 +8,23 @@
 		<div class="header">
 			<div class="welcome fl">欢迎来到天天生鲜!</div>
 			<div class="fr">
-				<div class="login_info fl">
+				<div class="login_btn fl">
 					欢迎您：<em>{{ uname }}</em>
 				</div>
-				<div class="login_btn fl">
-					<a href="login.html">登录</a>
+                <div class="login_btn fl">
 					<span>|</span>
-					<a href="register.html">注册</a>
+					<a href="/user/login/">退出</a>
 				</div>
+{#				<div class="login_btn fl">#}
+{#					<a href="login.html">登录</a>#}
+{#					<span>|</span>#}
+{#					<a href="register.html">注册</a>#}
+{#				</div>#}
 				<div class="user_link fl">
 					<span>|</span>
 					<a href="/user/user_center_order">用户中心</a>
 					<span>|</span>
-					<a href="cart.html">我的购物车</a>
+					<a href="/cart/">我的购物车</a>
 					<span>|</span>
 					<a href="/tt_order/all_order/">我的订单</a>
 				</div>
@@ -77,10 +81,10 @@
         {% for cart in cartlist %}
             <ul class="goods_list_td clearfix">
                 <input type="hidden" name="cid" value="{{ cart.id }}">
-{#                forloop.counter对应商品前从1开始的编号#}
+{#                forloop.counter对应商品前从1开始的编号 #}
                 <li class="col01">{{ forloop.counter }}</li>
-                <li class="col02"><img src="/static/images/{{ cart.goods.gpic }}"></li>
-                <li class="col03">{{ cart.goods.gtitle }}</li>
+                <li class="col02"><img src="/static/media/{{ cart.goods.gpic }}"></li>
+                <li class="col03">{{ cart.goods.gtitle|truncatechars:'15' }}</li>
                 <li class="col04">{{ cart.goods.gunit }}</li>
                 <li class="col05">{{ cart.goods.gprice }}</li>
                 <li class="col06">{{ cart.count }}</li>
@@ -93,14 +97,15 @@
 
 	<div class="common_list_con clearfix">
 		<div class="settle_con">
-			<div class="total_goods_count">共<em>2</em>件商品，总金额<b>42.60元</b></div>
+			<div class="total_goods_count">共<em>{{ length }}</em>件商品，总金额<b>42.60元</b></div>
 			<div class="transit">运费：<b>10元</b></div>
 			<div class="total_pay">实付款：<b>52.60元</b></div>
 		</div>
 	</div>
 
 	<div class="order_submit clearfix">
-		<a href="javascript:;" id="order_btn">提交订单</a>
+{#		<a href="javascript:;" id="order_btn">提交订单</a>#}
+        <input type="submit" value="提交订单">
 	</div>	
  </form>
 	<div class="popup_con">
@@ -113,8 +118,26 @@
 	<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
 	<script type="text/javascript">
 		$(function () {
+            //小计
+            var value3 = 0;
+            //总计
+            var tolal = 0;
+            $('.col07').each(function () {
+                var value1 = $(this).prev().html();
+                var value2 = $(this).prev().prev().html();
+                value3 = (parseFloat(value1)*parseFloat(value2)).toFixed(2);
+                $(this).html(value3+"元");
 
+                tolal += parseFloat(value3);
+                console.log(tolal);
+            });
 
+            $('.total_goods_count b').html(tolal.toFixed(2)+"元");
+            //实付款
+            var pay = tolal + 10;
+            $('.total_pay b').html(pay.toFixed(2)+"元");
+
+            //点击提交处理
 		    $('#order_btn').click(function() {
                 localStorage.setItem('order_finish',2);
                 $.get('/tt_order/order_list/',function (data) {

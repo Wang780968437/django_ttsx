@@ -16,17 +16,19 @@ from ttsx_user.models import UserInfo,UserAddressInfo
 def verify_order(request):
     # 获取登录用户名
     uid = request.session.get('user_id')
-    print(uid)
+    # print(uid)
     name = request.session.get('user_name')
     addrs = UserAddressInfo.objects.filter(user_id=uid)
-    print(addrs)
+    # print(addrs)
     # 获取该用户提交的购物车信息
     cart_ids = request.GET.getlist('cart_id')
-    print(type(cart_ids))
-    carts = CartInfo.objects.filter(pk__in=cart_ids)
-    print(carts)
+    # print(type(cart_ids))
+    carts = CartInfo.objects.filter(pk__in=[1,2,3,4])
+    length = len(carts)
+    # print(carts)
     context = {'title':'提交订单',
                'cartlist':carts,
+               'length':length,
                'uname':name,
                'addrs':addrs,
     }
@@ -36,10 +38,16 @@ def verify_order(request):
 @user_decorator.login
 # 订单列表
 def order_list(request):
+
     uid = request.session.get('user_id')
     addr_id = request.POST.get('addr_id')
+    # print(addr_id)
     addr = UserAddressInfo.objects.filter(id=addr_id)
+    # print(addr)
     cids = request.POST.getlist('cid')
+    print(cids)
+    if cids == []:
+        return redirect('/cart/')
     #开始事件,保存回退点
     sid = transaction.savepoint()
     # 创建订单对象
@@ -47,23 +55,27 @@ def order_list(request):
     order.oid = "%s%s"%(datetime.now().strftime('%Y%m%d%H%M%S'),uid)
     order.user_id = uid
     order.ototal = 0
-    order.oaddress =  addr.uaddress +' ( '+ addr.uname + ' 收' +' ) '+ addr.uphone
+    print('===========================')
+    order.oaddress =  addr[0].uaddress +' ( '+ addr[0].uname + ' 收' +' ) '+ addr[0].uphone
+    print("***************************")
     order.save()
     # 查询选中的购物车信息
     carts = CartInfo.objects.filter(id__in=cids)
+    print(carts)
     total = 0
     isOK = True
     for cart in carts:
+        print(cart)
         if cart.count <= cart.goods.gkucun:
             # 库存充足，创建详单对象
             detail = OrderDetailInfo()
             detail.goods = cart.goods
-            detail.price = cart.goods.gprice
             detail.order = order
             detail.count = cart.count
+            detail.price = cart.goods.gprice*cart.count
             detail.save()
             # 计算每条购物车商品的总价格
-            total += detail.count*detail.price
+            total += detail.price
             # 减少库存
             cart.goods.gkucun -= cart.count
             cart.goods.save()
@@ -75,28 +87,44 @@ def order_list(request):
 
     if isOK:
         # 保存总价
-        order.ototal = total
+        order.ototal = total + 10
         order.save()
         # 提交
         transaction.savepoint_commit(sid)
-        return JsonResponse({'ok':'ok'})
+        return redirect("/tt_order/all_order/")
+        # return JsonResponse({'ok':'ok'})
     else:
         transaction.savepoint_rollback(sid)
         return redirect('/cart/')
 
 
-
-
 @user_decorator.login
 # 订单中心
 def all_order(request):
-
     # 获取登录的用户名
     name=request.session.get('user_name')
     print(name)
+
     # 根据当前登陆的用户名，获取用户所有订单信息
     orderinfolist = OrderInfo.objects.filter(user__uname = name)
     print(orderinfolist)
+    # 定义保存未支付订单列表
+    lists=[]
+    # 定义保存已支付订单列表
+    lists1=[]
+    for orderinfo in orderinfolist:
+        # 未支付订单
+        if orderinfo.oIsPay == 0:
+            detailinfo0 = OrderDetailInfo.objects.filter(order_id=orderinfo.oid)
+            lists.append([orderinfo,detailinfo0])
+        else:
+            # 已支付订单
+            detailinfo1 = OrderDetailInfo.objects.filter(order_id=orderinfo.oid)
+            lists1.append([orderinfo,detailinfo1])
+
     # 上下文
-    context = {"uname":name,"list":orderinfolist}
+    context = {"uname":name,
+               'lists0':lists,
+               'lists1':lists1
+               }
     return render(request,"tt_order/user_center_order.html",context)
