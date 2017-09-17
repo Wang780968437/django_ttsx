@@ -21,35 +21,48 @@
               $('.name_input').blur(function () {
                   if($.trim($('.name_input').val())==''){
                       $('.user_error').html('请输入用户名').show();
-                      name_error = false;
+                      name_error = true;
                   }else{
                       $('.user_error').hide();
-                      name_error = true;
+                      name_error = false;
                   }
               });
 
               $('.pass_input').blur(function () {
                   if($.trim($('.pass_input').val())==''){
                       $('.pwd_error').html('请输入密码').show();
-                      pwd_error = false;
+                      pwd_error = true;
                   }else{
                       $('.pwd_error').hide();
-                      pwd_error = true;
+                      pwd_error = false;
                   }
               });
 
               $('#yzm_input').blur(function () {
                   if($.trim($('#yzm_input').val())==''){
                       $('#yzm_error').html('请输入验证码').show();
-                      yzm_error = false;
+                      yzm_error = true;
                   }else{
                       $('#yzm_error').hide();
-                      yzm_error = true;
+                      yzm_error = false;
                   }
               });
 
               $('#change').css('cursor','pointer').click(function () {
                   $('#show').prop('src',$('#show').prop('src')+1);
+              });
+
+              $('#login_form').submit(function () {
+
+                  if(name_error == false && pwd_error == false && yzm_error == false) {
+
+                        return true;
+                  }
+
+                  else{
+
+                        return false;
+                  }
               });
 
         });
@@ -58,7 +71,7 @@
 
 {%block body%}
 	<div class="login_top clearfix">
-		<a href="/index.html/" class="login_logo"><img src="/static/images/logo02.png"></a>
+		<a href="/user/" class="login_logo"><img src="/static/images/logo02.png"></a>
 	</div>
 
 	<div class="login_form_bg">
@@ -71,7 +84,7 @@
 					<a href="/user/register/">立即注册</a>
 				</div>
 				<div class="form_input">
-					<form action="/user/user_login_verify/" method="post">
+					<form action="/user/user_login_verify/" method="post" id="login_form">
 						<input type="text" name="username" class="name_input"  value="{{ uname }}" placeholder="请输入用户名">
 						<div class="user_error">输入错误</div>
 						<input type="password" name="pwd" class="pass_input" value="{{ upwd }}" placeholder="请输入密码">
