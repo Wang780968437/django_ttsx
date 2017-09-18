@@ -48,7 +48,7 @@ $(function(){
 		}
 		else
 		{
-			$.get('/user/uname_exist/?name='+$('#user_name').val(),function (data) {
+			$.get('/user/uname_exist/',{'u_name':$('#user_name').val()},function (data) {
 				if(data.count == 1){
 					$('#user_name').next().html('用户名已经存在').show();
 					error_name = true;
@@ -129,12 +129,6 @@ $(function(){
 		}
 
 	});
-
-
-
-
-
-
 
 
 })

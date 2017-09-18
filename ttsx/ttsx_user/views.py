@@ -20,7 +20,7 @@ def register(request):
 
 # 注册时判断用户名是否存在
 def uname_exist(request):
-    name = request.GET.get('name')
+    name = request.GET.get('u_name')
     count = UserInfo.objects.filter(uname = name).count()
 
     return JsonResponse({'count':count})
@@ -41,7 +41,12 @@ def add_user(request):
     user.uemail = uemail
     user.save()
 
-    task.sendmail.delay(user.id,uemail)
+    '''
+        用task必须在终端先启动redis服务：sudo service redis start
+        并且在虚拟环境中项目目录下启动worker：python manage.py celery worker --loglevel=info
+        邮件才能发送成功！
+    '''
+    task.sendmail.delay(user.id, uemail)
 
     # msg = '<a href="http://127.0.0.1:8000/user/active%s/" target="_blank">点击激活</a>'%(user.id)
     # send_mail('天天生鲜用户激活', '',
@@ -49,15 +54,7 @@ def add_user(request):
     #           [uemail],
     #           html_message=msg)
 
-    # return HttpResponse('用户注册成功，请到邮箱中激活！')
-    return redirect('/user/login_1/')
-
-# 仅用于注册时的跳转登陆
-def login_1(request):
-    uname = request.COOKIES.get('uname','')
-    context = {'title':'用户登陆', 'error_name':0, 'error_pwd':0, 'error_yzm':0, 'uname': uname}
-    return render(request, 'ttsx_user/login_1.html', context)
-
+    return HttpResponse('用户注册成功，请到邮箱中激活！')
 
 # 用户通过邮件激活
 def active(request,uid):
@@ -68,8 +65,8 @@ def active(request,uid):
 
 # 登陆
 def login(request):
-    uname = request.COOKIES.get('uname','')
-    context = {'title':'用户登陆', 'error_name':0, 'error_pwd':0, 'error_yzm':0, 'uname': uname}
+    uname = request.COOKIES.get('uname','')    # 记住用户名
+    context = {'title':'登陆', 'uname': uname}
     return render(request, 'ttsx_user/login.html', context)
 
 # 用户信息
@@ -129,52 +126,58 @@ def user_center_site(request):
 
 # 登陆验证
 def user_login_verify(request):
+    if request.method == 'GET':
+        return redirect('/user/login/')
+
     post = request.POST
     name = post.get('username')
     upwd = post.get('pwd')
     jizhu = post.get('jizhu',0)
     yzm_value = post.get('yzm_value')
+    context = {'title':'登陆',  'uname':name, 'upwd':upwd, 'error_name':0, 'error_pwd':0, 'error_yzm':0}
 
     if yzm_value.lower() == request.session['verifycode'].lower():
         users = UserInfo.objects.filter(uname = name)     #  验证用户是否存在
-        if len(users) == 1:
+        if users:
             s1 = sha1()
             s1.update(upwd.encode('utf-8'))
             supwd = s1.hexdigest()
             if supwd == users[0].upwd:
-                url = request.COOKIES.get('url','/user/')
-                response = HttpResponseRedirect(url)
-                if jizhu != 0:
-                    response.set_cookie('uname',name)
+                if users[0].isActive:
+                    url = request.session.get('url','/user/')
+                    response = HttpResponseRedirect(url)
+                    if jizhu != 0:
+                        response.set_cookie('uname',name,max_age=60*60*24*7)
+                    else:
+                        response.set_cookie('uname','',max_age=-1)
+                    request.session['user_id'] = users[0].id
+                    request.session['user_name'] = name
+                    return response      #   登陆成功时的跳转
                 else:
-                    response.set_cookie('uname','',max_age=-1)
-                request.session['user_id'] = users[0].id
-                request.session['user_name'] = name
-                return response      #   登陆成功时的跳转
+                    return HttpResponse('请先到邮箱中激活再回来登陆!')
 
             else: #   密码错误时的处理
-                context = {'title':'登陆','error_name':0,'error_pwd':1, 'error_yzm':0, 'uname':name, 'upwd':upwd}
+                context['error_pwd'] = 1
                 return render(request,'ttsx_user/login.html',context)
 
         else:   #   用户名错误时的处理
-            context = {'title': '登陆', 'error_name': 1, 'error_pwd':0, 'error_yzm':0, 'uname': name, 'upwd': upwd}
+            context['error_name'] = 1
             return render(request, 'ttsx_user/login.html', context)
 
     else:  #验证码错误时的处理
-        context =  {'title': '登陆', 'error_name':0, 'error_pwd':0,  'error_yzm':1, 'uname': name, 'upwd': upwd}
+        context['error_yzm'] = 1
         return render(request, 'ttsx_user/login.html', context)
 
 # 退出登陆
 def logout(request):
     request.session.flush()
     response = HttpResponseRedirect('/user/')
-    response.delete_cookie('url')
-    response.delete_cookie('uname')
+    # response.delete_cookie('url')
     return response
 
 # 首页
 def index(request):
-    return render(request,'ttsx_user/index.html',{'title':'首页'})
+    return render(request,'ttsx_user/index.html',{'title':'首页','iscart':1})
 
 # 生成验证码
 def verify_code(request):
@@ -235,7 +238,7 @@ def pwd_handle(request):
     s1.update(new_pwd.encode('utf-8'))
     supwd = s1.hexdigest()
 
-    user.upwd = supwd;
+    user.upwd = supwd
     user.save()
     request.session.flush()
     response = HttpResponseRedirect('/user/login/')

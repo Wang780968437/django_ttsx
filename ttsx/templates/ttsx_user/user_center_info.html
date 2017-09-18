@@ -13,12 +13,19 @@
             var error_new_rPwd = false;
 
             $('#new_Pwd').blur(function () {
+                var len = $('#new_Pwd').val().length;
                 if($.trim($('#new_Pwd').val())==''){
-                    $('#newPwd').show().html('不能为空');
+                    $('#newPwd').show().html('新密码不能为空');
                     error_new_Pwd = true;
                 }else {
-                    error_new_Pwd = false;
-                    $('#newPwd').hide();
+                    if(len<8||len>20){
+                        $('#newPwd').show().html('密码最少8位，最长20位')
+                        error_new_Pwd = true;
+                    }else{
+                        error_new_Pwd = false;
+                        $('#newPwd').hide();
+                    }
+
                 }
 
             });
@@ -27,7 +34,7 @@
 
             $('#new_rPwd').blur(function () {
                 if($.trim($('#new_rPwd').val())==''){
-                    $('#newrPwd').show().html('不能为空');
+                    $('#newrPwd').show().html('确认密码不能为空');
                     error_new_rPwd = true;
                 }else{
                     $('#newrPwd').hide();
