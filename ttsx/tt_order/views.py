@@ -3,7 +3,7 @@ from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.utils.datetime_safe import datetime
-
+from django.core.paginator import Paginator
 from .models import *
 from tt_cart.models import *
 from ttsx_user import user_decorator
@@ -55,9 +55,7 @@ def order_list(request):
     order.oid = "%s%s"%(datetime.now().strftime('%Y%m%d%H%M%S'),uid)
     order.user_id = uid
     order.ototal = 0
-    print('===========================')
     order.oaddress =  addr[0].uaddress +' ( '+ addr[0].uname + ' 收' +' ) '+ addr[0].uphone
-    print("***************************")
     order.save()
     # 查询选中的购物车信息
     carts = CartInfo.objects.filter(id__in=cids)
@@ -100,31 +98,50 @@ def order_list(request):
 
 @user_decorator.login
 # 订单中心
-def all_order(request):
+def all_order(request, pindex):
     # 获取登录的用户名
-    name=request.session.get('user_name')
-    print(name)
-
+    name = request.session.get('user_name')
+    # print(name)
     # 根据当前登陆的用户名，获取用户所有订单信息
-    orderinfolist = OrderInfo.objects.filter(user__uname = name)
+    orderinfolist = OrderInfo.objects.filter(user__uname=name).order_by("-oid")
     print(orderinfolist)
+    # 全部订单详情列表
+    lists = []
     # 定义保存未支付订单列表
-    lists=[]
+    # lists0 = []
     # 定义保存已支付订单列表
-    lists1=[]
+    # lists1 = []
     for orderinfo in orderinfolist:
-        # 未支付订单
-        if orderinfo.oIsPay == 0:
-            detailinfo0 = OrderDetailInfo.objects.filter(order_id=orderinfo.oid)
-            lists.append([orderinfo,detailinfo0])
-        else:
-            # 已支付订单
-            detailinfo1 = OrderDetailInfo.objects.filter(order_id=orderinfo.oid)
-            lists1.append([orderinfo,detailinfo1])
-
+        # 每笔未支付订单
+        # if orderinfo.oIsPay == 0:
+        detailinfo0 = OrderDetailInfo.objects.filter(order_id=orderinfo.oid)
+        lists.append([orderinfo,detailinfo0])
+        # else:
+            # 每笔已支付订单
+            # detailinfo1 = OrderDetailInfo.objects.filter(order_id=orderinfo.oid)
+            # lists1.append([orderinfo,detailinfo1])
+    # 按全部订单分页，每页显示2条
+    paginator = Paginator(lists, 2)
+    # 获取页码列表
+    plist = paginator.page_range
+    if pindex == '':
+        pindex='1'
+    pindex=int(pindex)
+    # 当前页数据
+    page = paginator.page(pindex)
     # 上下文
     context = {"uname":name,
-               'lists0':lists,
-               'lists1':lists1
+               'page':page,
+               'plist':plist,
+               'pindex':pindex
                }
     return render(request,"tt_order/user_center_order.html",context)
+
+def pay(request):
+    oid = request.POST.get("oid")
+    print(oid)
+    order = OrderInfo.objects.get(oid=oid)
+    order.oIsPay = 1
+    order.save()
+    return render(request,"tt_order/pay.html")
+

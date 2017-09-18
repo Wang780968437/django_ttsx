@@ -468,6 +468,9 @@ html,body{height:100%}
 	border:1px solid #ddd;	
 	text-align:center;
 }
+.order_list_table input{
+	cursor: pointer;
+}
 
 .order_goods_list{border-bottom:1px solid #ddd;margin-bottom:-2px;}
 .order_goods_list li{float:left; height:80px;line-height:80px;}
