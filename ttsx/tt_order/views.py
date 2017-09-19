@@ -35,11 +35,11 @@ def verify_order(request):
     }
     return render(request,"tt_order/place_order.html",context)
 
+
 @transaction.atomic
 @user_decorator.login
 # 订单列表
 def order_list(request):
-
     uid = request.session.get('user_id')
     addr_id = request.POST.get('addr_id')
     # print(addr_id)
@@ -72,7 +72,6 @@ def order_list(request):
             detail.order = order
             detail.count = cart.count
             detail.price = cart.goods.gprice
-
             detail.save()
             # 计算每条购物车商品的总价格
             total += detail.price*cart.count
@@ -84,7 +83,6 @@ def order_list(request):
         else:
             isOK = False
             break
-
     if isOK:
         # 保存总价
         order.ototal = total + 10

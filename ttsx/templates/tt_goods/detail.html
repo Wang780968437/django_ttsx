@@ -5,36 +5,42 @@
     <script>
        $(function () {
 
+           function total () {
+               var num = $('.num_show').val();
+               var zongjia =parseFloat(num)*{{ goods.gprice }}
+                   $('.total em').html(zongjia.toFixed(2)+'元')
+           }
+
+
+           total();
+           {#	    加减的的点击事件#}
            $('.add').click(function () {
-               var value = parseInt($('.num_show').val())+1;
-               $('.num_show').val(value).blur();
+               if ($('.num_show').val()==''){
+                   $('.num_show').val(0)
+               }
+               var num = parseInt($(this).prev().val())+1;
+               $('.num_show').val(num);
+               total();
            });
-
            $('.minus').click(function () {
-               var value = parseInt($('.num_show').val())-1;
-               $('.num_show').val(value).blur();
-           });
-
-           $('.num_show').blur(function () {
-               var value = parseInt($(this).val());
-               if(isNaN(value) | value<1) {
-                   value = 1;
+               if ($('.num_show').val()==''){
+                   $('.num_show').val(0)
                }
-               if(value>100){
-                   value = 100;
+               var num = parseInt($(this).prevAll().eq(1).val())-1;
+               if (num < 0){
+                   num=0
                }
-               $(this).val(value);
-               var price = parseFloat($('.show_pirze em').html());
-               var total = price * value
-               $('.total em').html(total.toFixed(2)+'元');
+               $('.num_show').val(num);
+               total();
            });
-
            {#        输入框val值变化事件#}
            $('.num_show').bind('input propertychange', function() {
                if ($('.num_show').val() != ''){
-                   $(this).blur()
+                   total();
                }else {
+
                    $('.total em').html('0.00元')
+
                }
 
            });
@@ -126,5 +132,5 @@
 
             <div class="add_jump"></div>
 
-	
+
         {% endblock right %}
