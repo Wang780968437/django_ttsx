@@ -56,10 +56,10 @@
             <h3 class="common_title2">全部订单</h3>
             {% for order in page %}
                 {% if order.0.oIsPay == 0 %}
-                    <form method="post" action="/tt_order/pay/">
+                    <form method="post" action="/order/pay/">
                         <input type="hidden" name="oid" value="{{ order.0.oid }}">
                     <ul class="order_list_th w978 clearfix">
-                        <li class="col01">{{ order.0.odate }}</li>
+                        <li class="col01">{{ order.0.odate|date:"Y-m-j H:i:s" }}</li>
                         <li class="col02">订单号：{{ order.0.oid }}</li>
                         <li class="col02 stress">未支付</li>
                     </ul>
@@ -86,7 +86,7 @@
                     </form>
                 {% else %}
                     <ul class="order_list_th w978 clearfix">
-                        <li class="col01">{{ order.0.odate }}</li>
+                        <li class="col01">{{ order.0.odate|date:"Y-m-j H:i:s" }}</li>
                         <li class="col02">订单号：{{ order.0.oid }}</li>
                         <li class="col02 stress">已支付</li>
                     </ul>
@@ -113,19 +113,19 @@
             {% endfor %}
             <div class="pagenation">
                 {% if page.has_previous %}
-                    <a href="/tt_order/all_order1/">首页</a>
-                    <a href="/tt_order/all_order{{ pindex|add:-1 }}/">上一页</a>
+                    <a href="/order/all_order1/">首页</a>
+                    <a href="/order/all_order{{ pindex|add:-1 }}/">上一页</a>
                 {% endif %}
                 {% for i in plist %}
                     {% if i == pindex %}
                         <a href="#" class="active">{{ i }}</a>
                     {% else %}
-                        <a href="/tt_order/all_order{{ i }}/">{{ i }}</a>
+                        <a href="/order/all_order{{ i }}/">{{ i }}</a>
                     {% endif %}
                 {% endfor %}
                 {% if page.has_next %}
-                    <a href="/tt_order/all_order{{ pindex|add:1 }}/">下一页></a>
-                    <a href="/tt_order/all_order{{ page.end_index }}/">尾页</a>
+                    <a href="/order/all_order{{ pindex|add:1 }}/">下一页></a>
+                    <a href="/order/all_order{{ page.end_index }}/">尾页</a>
                 {% endif %}
             </div>
 		</div>

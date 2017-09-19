@@ -27,7 +27,7 @@
 					<span>|</span>
 					<a href="/cart/">我的购物车</a>
 					<span>|</span>
-					<a href="/tt_order/all_order/">我的订单</a>
+					<a href="/order/all_order/">我的订单</a>
 				</div>
 			</div>
 		</div>		
@@ -42,7 +42,7 @@
 		</div>		
 	</div>
 
-<form method="post" action="/tt_order/order_list/">
+<form method="post" action="/order/order_list/">
 	<h3 class="common_title">确认收货地址</h3>
 	<div class="common_list_con clearfix">
             <dl>
@@ -141,12 +141,12 @@
             //点击提交处理
 		    $('#order_btn').click(function() {
                 localStorage.setItem('order_finish',2);
-                $.get('/tt_order/order_list/',function (data) {
+                $.get('/order/order_list/',function (data) {
                     if(data.ok == 'ok'){
                         $('.popup_con').fadeIn('fast', function() {
                             setTimeout(function(){
                                 $('.popup_con').fadeOut('fast',function(){
-                                    window.location.href = '/tt_order/all_order/';
+                                    window.location.href = '/order/all_order/';
                                 });
                             },3000)
                         });

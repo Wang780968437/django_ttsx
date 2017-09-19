@@ -23,7 +23,7 @@ def verify_order(request):
     # 获取该用户提交的购物车信息
     cart_ids = request.GET.getlist('cart_id')
     # print(type(cart_ids))
-    carts = CartInfo.objects.filter(pk__in=[1,2,3,4])
+    carts = CartInfo.objects.filter(pk__in=cart_ids)
     length = len(carts)
     # print(carts)
     context = {'title':'提交订单',
@@ -89,7 +89,7 @@ def order_list(request):
         order.save()
         # 提交
         transaction.savepoint_commit(sid)
-        return redirect("/tt_order/all_order/")
+        return redirect("/order/all_order/")
         # return JsonResponse({'ok':'ok'})
     else:
         transaction.savepoint_rollback(sid)
