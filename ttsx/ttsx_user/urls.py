@@ -13,7 +13,6 @@ urlpatterns = [
   url('^user_center_site/$',views.user_center_site),
   url('^user_login_verify/$',views.user_login_verify),
   url('^logout/$',views.logout),
-  url('^$',views.index),
   url('^verify_code/$',views.verify_code),
   url('^pwd_handle/$',views.pwd_handle),
 ]
