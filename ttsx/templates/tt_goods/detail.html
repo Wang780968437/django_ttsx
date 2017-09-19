@@ -1,8 +1,10 @@
 {% extends 'tt_goods/base.html' %}
 
 {% block head %}
+    <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
     <script>
        $(function () {
+
            $('.add').click(function () {
                var value = parseInt($('.num_show').val())+1;
                $('.num_show').val(value).blur();
@@ -26,6 +28,40 @@
                var total = price * value
                $('.total em').html(total.toFixed(2)+'元');
            });
+
+           {#        输入框val值变化事件#}
+           $('.num_show').bind('input propertychange', function() {
+               if ($('.num_show').val() != ''){
+                   $(this).blur()
+               }else {
+                   $('.total em').html('0.00元')
+               }
+
+           });
+
+           {#购物车点击事件#}
+           $('.add_cart').click(function(){
+               {#		        动画#}
+               var $add_x = $('#add_cart').offset().top;
+               var $add_y = $('#add_cart').offset().left;
+               var $to_x = $('#show_count').offset().top;
+               var $to_y = $('#show_count').offset().left;
+               $(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'});
+
+               $(".add_jump").stop().animate({
+                       'left': $to_y+7,
+                       'top': $to_x+7},
+                   "fast", function() {
+                       $(".add_jump").fadeOut('fast',function(){
+                           {#购物车值变化#}
+                           var counter = $('.num_show').val();
+                           $.get('/cart/add_cart/',{'id': {{goods.id}}, 'counter': counter}, function (data) {
+                               $('#show_count').html(data.num);
+                           })
+                       });
+                   });
+           })
+
        });
 
 
@@ -90,39 +126,5 @@
 
             <div class="add_jump"></div>
 
-            <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
-            <script type="text/javascript">
-                var $add_x = $('#add_cart').offset().top;
-                var $add_y = $('#add_cart').offset().left;
-
-                var $to_x = $('#show_count').offset().top;
-                var $to_y = $('#show_count').offset().left;
-
-                $(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'})
-                $('#add_cart').click(function(){
-                    //判断是否登陆，未登录的话提示先登陆
-                    if($('.login_btn').text().indexOf('登录')>=0) {
-                        alert('请登录后再购买');
-                        location.href='/user/login/';
-                        return;
-                    }
-                    //动画
-                    $(".add_jump").stop().animate({
-                        'left': $to_y+7,
-                        'top': $to_x+7},
-                        "fast", function() {
-                            $(".add_jump").fadeOut('fast',function(){
-                                $('#show_count').html(2);
-                            });
-                    });
-
-                    //异步
-                    num=parseInt($('.num_show').val());
-                    $.get('/cart/add{{ g.id }}_'+num+'/',function(data) {
-                        $('show_count').text(data_count);
-                    });
-
-                })
-            </script>
 	
         {% endblock right %}

@@ -1,47 +1,18 @@
-{%extends 'base.html'%}
-{% block title %}
-	<title>天天生鲜-我的订单</title>
-{% endblock title%}
-	
-{% block body%}
+{%extends 'base_top.html'%}
 
-	<div class="header_con">
-		<div class="header">
-			<div class="welcome fl">欢迎来到天天生鲜!</div>
-			<div class="fr">
-                {% if request.session.user_id %}
-				<div class="login_btn fl">
-					欢迎您：<em>{{ uname }}</em>
-                    <span>|</span>
-					<a href="/user/logout/">退出</a>
-                </div>
-                {% else %}
-				<div class="login_btn fl">
-					<a href="/user/login/">登录</a>
-					<span>|</span>
-					<a href="/user/register/">注册</a>
-				</div>
-                {% endif %}
-				<div class="user_link fl">
-					<span>|</span>
-					<a href="/user/user_center_order">用户中心</a>
-					<span>|</span>
-					<a href="/cart/">我的购物车</a>
-					<span>|</span>
-					<a href="javascript:;">我的订单</a>
-				</div>
-			</div>
-		</div>		
-	</div>
-
-	<div class="search_bar clearfix">
-		<a href="index.html" class="logo fl"><img src="/static/images/logo.png"></a>
-		<div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;用户中心</div>
-		<div class="search_con fr">
-			<input type="text" class="input_text fl" name="" placeholder="搜索商品">
-			<input type="button" class="input_btn fr" name="" value="搜索">
-		</div>		
-	</div>
+	{% block head %}
+        <script>
+            $(function () {
+                $('.col04').each(function () {
+                    var count = $(this).prev().html();
+                    var price = $(this).attr('id');
+                    var subtotal = parseFloat(price)*parseInt(count)
+                    $(this).html(subtotal.toFixed(2)+"元")
+                })
+            })
+        </script>
+	{% endblock head %}
+{% block center%}
 
 	<div class="main_con clearfix">
 		<div class="left_menu_con clearfix">
@@ -73,7 +44,7 @@
                                             <li class="col01"><img src="/static/media/{{ detail.goods.gpic }}"></li>
                                             <li class="col02">{{ detail.goods.gtitle|truncatechars:'15' }}<em>{{ detail.goods.gprice }}元/{{ detail.goods.gunit }}</em></li>
                                             <li class="col03">{{ detail.count }}</li>
-                                            <li class="col04">{{ detail.price }}元</li>
+                                            <li class="col04" id="{{ detail.goods.gprice }}">0.00元</li>
                                         </ul>
                                     {% endfor %}
                                 </td>
@@ -99,7 +70,7 @@
                                         <li class="col01"><img src="/static/media/{{ detail1.goods.gpic }}"></li>
                                         <li class="col02">{{ detail1.goods.gtitle|truncatechars:'15' }}<em>{{ detail1.goods.gprice }}元/{{ detail1.goods.gunit }}</em></li>
                                         <li class="col03">{{ detail1.count }}</li>
-                                        <li class="col04">{{ detail1.price }}元</li>
+                                        <li class="col04" id="{{ detail1.goods.gprice }}">0.00元</li>
                                     </ul>
                                         {% endfor %}
                                 </td>
@@ -131,4 +102,4 @@
 		</div>
 	</div>
 
-{% endblock body %}
+{% endblock center %}

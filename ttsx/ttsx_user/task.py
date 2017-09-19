@@ -6,7 +6,7 @@ from django.conf import settings
 
 @task
 def sendmail(uid,email):
-    msg = '<a href="http://127.0.0.1:8000/user/active%s/" target="_blank">点击激活</a>' % (uid)
+    msg = '<a href="http://127.0.0.1:8000/user/active/?uid=%s" target="_blank">点击激活</a>' % (uid)
     send_mail('天天生鲜用户激活', '',
               settings.EMAIL_FROM,
               [email],

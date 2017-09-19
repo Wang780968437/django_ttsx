@@ -27,6 +27,7 @@ def verify_order(request):
     length = len(carts)
     # print(carts)
     context = {'title':'提交订单',
+               'dd':2,
                'cartlist':carts,
                'length':length,
                'uname':name,
@@ -70,10 +71,11 @@ def order_list(request):
             detail.goods = cart.goods
             detail.order = order
             detail.count = cart.count
-            detail.price = cart.goods.gprice*cart.count
+            detail.price = cart.goods.gprice
+
             detail.save()
             # 计算每条购物车商品的总价格
-            total += detail.price
+            total += detail.price*cart.count
             # 减少库存
             cart.goods.gkucun -= cart.count
             cart.goods.save()
@@ -93,7 +95,7 @@ def order_list(request):
         # return JsonResponse({'ok':'ok'})
     else:
         transaction.savepoint_rollback(sid)
-        return redirect('/cart/')
+        return redirect('/cart/show_cart')
 
 
 @user_decorator.login
@@ -130,7 +132,8 @@ def all_order(request, pindex):
     # 当前页数据
     page = paginator.page(pindex)
     # 上下文
-    context = {"uname":name,
+    context = {"title":"用户中心",
+               "uname":name,
                'page':page,
                'plist':plist,
                'pindex':pindex

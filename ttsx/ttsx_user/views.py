@@ -58,7 +58,8 @@ def add_user(request):
     return HttpResponse('用户注册成功，请到邮箱中激活！')
 
 # 用户通过邮件激活
-def active(request,uid):
+def active(request):
+    uid = request.GET.get('uid')
     user = UserInfo.objects.get(id = uid)
     user.isActive = True
     user.save()

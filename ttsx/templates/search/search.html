@@ -4,7 +4,7 @@
 {% block nav %}
 
         <div class="breadcrumb">
-            <a href="#">全部分类</a>
+            <a href="#">搜索</a>
             <span>></span>
             <a href="#">{{ query }}</a>
         </div>
@@ -21,7 +21,7 @@
 					<div class="operate">
 						<span class="prize">￥{{ goods.object.gprice }}</span>
 						<span class="unit">{{ goods.object.gprice }}/{{ goods.object.gunit }}</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
+						<a href="#" class="add_goods" title="加入购物车" id="{{ goods.object.id }}"></a>
 					</div>
 				</li>
                 {% endfor %}
@@ -32,7 +32,14 @@
                     <a href="/search/?q={{ query }}& page=1">首页</a>
                     <a href="/search/?q={{ query }}& page={{ page_obj.number|add:-1 }}">上一页</a>
                  {% endif %}
-
+    <script>
+        $(function () {
+            {#	   获取购物车数量 #}
+            $.get('/cart/add_cart/', function (data) {
+                $('#show_count').html(data.num);
+            });
+        })
+    </script>
                  {% for i in paginator.page_range %}
                     {% if i == page_obj.number %}
                      <a href="#" class="active">{{ i }}</a>

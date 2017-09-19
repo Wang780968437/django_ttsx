@@ -9,7 +9,9 @@ class GetPathMiddleware:
             '/user/user_login_verify/',
             '/user/logout/',
             '/user/verify_code/',
-            '/user/pwd_handle/'
+            '/user/pwd_handle/',
+            '/cart/add_cart/',
+            '/user/active/',
         ]
 
         if request.path not in no_path:

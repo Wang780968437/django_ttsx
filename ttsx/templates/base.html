@@ -7,6 +7,21 @@
 	<link rel="stylesheet" type="text/css" href="/static/css/main.css">
 	<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
     <script src="/static/js/jquery.cookie.js"></script>
+    <script>
+        $(function () {
+            {#	   获取购物车数量 #}
+            $.get('/cart/add_cart/', function (data) {
+                $('#show_count').html(data.num);
+            });
+                    {#            小购物车的点击事件#}
+            $('.add_goods').click(function () {
+                $.get('/cart/add_cart/', {'id': $(this).prop('id'), 'counter': 1}, function (data) {
+                    $('#show_count').html(data.num);
+                });
+            })
+        })
+    </script>
+
 	{% block head %}
 	{% endblock head %}
 
