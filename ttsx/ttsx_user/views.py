@@ -10,6 +10,7 @@ from hashlib import sha1
 from .models import *
 from . import user_decorator
 from . import task
+from tt_goods.models import *
 
 # Create your views here.
 
@@ -73,7 +74,14 @@ def login(request):
 @user_decorator.login
 def user_center_info(request):
     user_email = UserInfo.objects.get(id = request.session['user_id']).uemail
-    context = {'title':'用户中心', 'user_email':user_email, 'user_name':request.session['user_name']}
+    browse_str = request.COOKIES.get('browse', '')
+    browse_list = []
+    if browse_str:
+        list = browse_str.split(',')
+        for goods_id in list:
+            browse_list.append(GoodsInfo.objects.get(id=int(goods_id)))
+
+    context = {'title':'用户中心', 'user_email':user_email, 'user_name':request.session['user_name'], 'list':browse_list}
     return render(request, 'ttsx_user/user_center_info.html',context)
 
 # 用户所有订单
@@ -144,7 +152,7 @@ def user_login_verify(request):
             supwd = s1.hexdigest()
             if supwd == users[0].upwd:
                 if users[0].isActive:
-                    url = request.session.get('url','/user/')
+                    url = request.session.get('url','/')
                     response = HttpResponseRedirect(url)
                     if jizhu != 0:
                         response.set_cookie('uname',name,max_age=60*60*24*7)
@@ -171,13 +179,10 @@ def user_login_verify(request):
 # 退出登陆
 def logout(request):
     request.session.flush()
-    response = HttpResponseRedirect('/user/')
+    response = HttpResponseRedirect('/')
+    response.delete_cookie('browse')
     # response.delete_cookie('url')
     return response
-
-# 首页
-def index(request):
-    return render(request,'ttsx_user/index.html',{'title':'首页','iscart':1})
 
 # 生成验证码
 def verify_code(request):
@@ -238,7 +243,7 @@ def pwd_handle(request):
     s1.update(new_pwd.encode('utf-8'))
     supwd = s1.hexdigest()
 
-    user.upwd = supwd;
+    user.upwd = supwd
     user.save()
     request.session.flush()
     response = HttpResponseRedirect('/user/login/')
