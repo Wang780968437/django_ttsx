@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'cfpp!s(n1hzb(zjg*5p(&mu6p@qz7m28u^c1g5ckp3@$ay^25)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False#True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*',]
 
 
 # Application definition
@@ -119,12 +119,13 @@ TINYMCE_DEFAULT_CONFIG = {
     'height':400,
 }
 
+STATIC_ROOT = '/var/www/ttsx/static/'
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
+MEDIA_ROOT = os.path.join(STATIC_ROOT,'media')#os.path.join(BASE_DIR, 'static/media')
 
 MAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.163.com'
