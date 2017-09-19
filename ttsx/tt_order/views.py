@@ -89,7 +89,7 @@ def order_list(request):
         order.save()
         # 提交
         transaction.savepoint_commit(sid)
-        return redirect("/tt_order/all_order/")
+        return redirect("/order/all_order/")
         # return JsonResponse({'ok':'ok'})
     else:
         transaction.savepoint_rollback(sid)
