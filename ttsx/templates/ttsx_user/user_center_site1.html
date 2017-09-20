@@ -1,18 +1,6 @@
 {%extends 'base_top.html'%}
 
-{%block head%}
-    <script>
-        $(function () {
-            if({{ count}} == 0){
-                $('#address').hide();
-                $('#add_address').show();
-            }else {
-                $('#address').show();
-                $('#add_address').hide();
-            }
-        });
-    </script>
-{%endblock head%}
+
 
 {%block center%}
 
@@ -29,9 +17,9 @@
 				<h3 class="common_title2">收货地址</h3>
 				<div class="site_con">
 					<dl>
-						<dt>当前地址：</dt>
-						<dd id="address"> {{ user.uaddress }} （ {{ user.uname }} 收）  {{ user.uphone }}</dd>
-                        <dd id="add_address" style="color: #ff8800">您还没有添加收货地址，请点击下面“编辑地址”进行添加！</dd>
+						<dt>添加地址</dt>
+						<dd id="address"> {{ user.uaddress }} （ {{ user.uname }} 收）  {{ user.uphone }} [修改地址]</dd>
+
 					</dl>					
 				</div>
 				<h3 class="common_title2">编辑地址</h3>

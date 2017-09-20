@@ -67,7 +67,7 @@ def active(request,uid):
 # 登陆
 def login(request):
     uname = request.COOKIES.get('uname','')    # 记住用户名
-    context = {'title':'登陆', 'uname': uname}
+    context = {'title':'登陆', 'uname': uname, 'error_name':0, 'error_pwd':0, 'error_yzm':0}
     return render(request, 'ttsx_user/login.html', context)
 
 # 用户信息
@@ -250,7 +250,29 @@ def pwd_handle(request):
     response.set_cookie('url','/user/user_center_info/')
     return response
 
+@user_decorator.login
+def site(request):
+    pass
 
+@user_decorator.login
+def site_handle(request):
+    post = request.POST
+    uid = request.session.get('user_id')
+    uname = post.get('user')
+    uaddress = post.get('uaddress')
+    uphone = post.get('uphone')
+    ucode = post.get('ucode')
+
+    addresee = UserAddressInfo()
+    addresee.uname = uname
+    addresee.user_id = uid
+    addresee.uphone = uphone
+    addresee.ucode = ucode
+    addresee.uaddress = uaddress
+    addresee.save()
+
+    context = {'title': '用户中心'}
+    return render(request,'ttsx_user/user_center_site1.html', context)
 
 
 

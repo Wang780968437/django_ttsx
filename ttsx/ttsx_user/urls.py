@@ -11,6 +11,8 @@ urlpatterns = [
   url('^user_center_info/$',views.user_center_info),
   url('^user_center_order/$',views.user_center_order),
   url('^user_center_site/$',views.user_center_site),
+  url('^site/$',views.site),
+  url('^site_handle/$',views.site_handle),
   url('^user_login_verify/$',views.user_login_verify),
   url('^logout/$',views.logout),
   url('^verify_code/$',views.verify_code),

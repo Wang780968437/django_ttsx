@@ -63,6 +63,16 @@
             });
 
             $('#formPwd').submit(function () {
+                if($.trim($('#new_Pwd').val())=='') {
+                    $('#newPwd').show().html('新密码不能为空');
+                    error_new_Pwd = true;
+                }
+
+                 if($.trim($('#new_rPwd').val())==''){
+                    $('#newrPwd').show().html('确认密码不能为空');
+                    error_new_rPwd = true;
+                }
+
                 if(error_new_rPwd==false && error_new_Pwd==false){
                     $('#showPwd').hide();
                     $('.user_info_list').css({'height':90});

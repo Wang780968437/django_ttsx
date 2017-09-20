@@ -2,6 +2,7 @@
 # -*- conding:utf-8 -*-
 
 from django.shortcuts import redirect
+from django.http import JsonResponse
 
 
 def login(func):
@@ -12,6 +13,9 @@ def login(func):
             # response = HttpResponseRedirect('/user/login/')
             # response.set_cookie('url',request.get_full_path())
             # return response
+
+            if request.is_ajax():
+                return JsonResponse({'login':1})
 
             return redirect('/user/login/')
 

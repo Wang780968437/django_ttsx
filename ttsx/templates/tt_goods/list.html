@@ -1,5 +1,28 @@
 {%extends 'tt_goods/base.html'%}
 
+{% block head %}
+    <script>
+       $(function () {
+
+           $('.add_goods').click(function () {
+               var value = $(this).next().val()
+               $.get('/cart/add_list/',{'gid':value},function (data) {
+                   if(data.login == 1){
+                       location.href = '/user/login/';
+                   }
+                   if(data.ok == 1){
+                       $('#show_count').html(data.count);
+                   }
+               });
+           });
+
+
+       });
+    </script>
+
+{% endblock head %}
+
+
 {% block nav %}
 
 	<div class="breadcrumb">
@@ -22,12 +45,14 @@
 			<ul class="goods_type_list clearfix">
                 {% for goods in page %}
 				<li>
+
 					<a href="/{{ goods.id }}/"><img src="/static/media/{{ goods.gpic }}"></a>
 					<h4><a href="/{{ goods.id }}/">{{ goods.gtitle }}</a></h4>
 					<div class="operate">
 						<span class="prize">￥{{ goods.gprice }}</span>
 						<span class="unit">{{ goods.gprice }}/{{ goods.gunit }}</span>
 						<a href="#" class="add_goods" title="加入购物车"></a>
+                        <input type="hidden" id="gid" value="{{ goods.id }}">
 					</div>
 				</li>
                 {% endfor %}
