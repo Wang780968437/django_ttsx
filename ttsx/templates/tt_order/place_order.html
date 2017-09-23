@@ -1,56 +1,45 @@
-{%extends 'base_top.html'%}
-{% block title %}
-	<title>天天生鲜-提交订单</title>
-{% endblock title%}
-	
-{% block body%}
-	<div class="header_con">
-		<div class="header">
-			<div class="welcome fl">欢迎来到天天生鲜!</div>
-			<div class="fr">
-                {% if request.session.user_id %}
-				<div class="login_btn fl">
-					欢迎您：<em>{{ uname }}</em>
-					<span>|</span>
-					<a href="/user/logout/">退出</a>
-				</div>
-                {% else %}
-				<div class="login_btn fl">
-					<a href="/user/login/">登录</a>
-					<span>|</span>
-					<a href="/user/register/">注册</a>
-				</div>
-                {% endif %}
-				<div class="user_link fl">
-					<span>|</span>
-					<a href="/user/user_center_order">用户中心</a>
-					<span>|</span>
-					<a href="/cart/">我的购物车</a>
-					<span>|</span>
-					<a href="/tt_order/all_order/">我的订单</a>
-				</div>
-			</div>
-		</div>		
-	</div>
+{% extends 'base_top.html' %}
 
-	<div class="search_bar clearfix">
-		<a href="index.html" class="logo fl"><img src="/static/images/logo.png"></a>
-		<div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;{{ title }}</div>
-		<div class="search_con fr">
-			<input type="text" class="input_text fl" name="" placeholder="搜索商品">
-			<input type="button" class="input_btn fr" name="" value="搜索">
-		</div>		
-	</div>
+{% block head %}
+    <script>
+       $(function () {
+           function total() {
+               var total_small = 0;
+               var total_all = 0;
+               var num = 0;
+               $('.goods_list_td').each(function (i, n){
+                   var price = parseFloat($(n).children('.col05').text());
+                   var count = parseInt($(n).children('.col06').text());
+                   total_small = price * count;
+                   total_all += total_small;
+                   num++;
+                   $(n).children('.col07').text(total_small.toFixed(2)+'元');
+                   console.log(total_all)
+               });
 
-<form method="post" action="/tt_order/order_list/">
+               $('.transit b').text(10+'元');
+               var total = total_all + parseFloat($('.transit b').text());
+               $('.total_goods_count em').text(num);
+               $('.total_goods_count b').text(total_all.toFixed(2)+'元');
+               $('.total_pay b').text(total.toFixed(2)+'元');
+           };
+
+           total();
+       });
+
+    </script>
+
+{% endblock head %}
+
+{% block center %}
+     <form action="/order/order_handle/" method="post">
 	<h3 class="common_title">确认收货地址</h3>
+
 	<div class="common_list_con clearfix">
-            <dl>
-                <dt>寄送到：</dt>
-                {% for addr in addrs %}
-                <dd><input type="radio" name="addr_id" value="{{ addr.id }}" checked>{{ addr.uaddress }} ( {{ addr.uname }} 收 ) {{ addr.uphone }}</dd>
-                {% endfor %}
-            </dl>
+		<dl>
+			<dt>寄送到：</dt>
+			<dd><input type="radio" name="address" checked="checked" value="{{ address.uaddress }} （ {{ address.uname }} 收）  {{ address.uphone }}">{{ address.uaddress }} （ {{ address.uname }} 收）  {{ address.uphone }}</dd>
+		</dl>
 		<a href="/user/user_center_site/" class="edit_site">编辑收货地址</a>
 
 	</div>
@@ -79,18 +68,18 @@
 			<li class="col04">数量</li>
 			<li class="col05">小计</li>		
 		</ul>
-        {% for cart in cartlist %}
-            <ul class="goods_list_td clearfix">
-                <input type="hidden" name="cid" value="{{ cart.id }}">
-{#                forloop.counter对应商品前从1开始的编号 #}
-                <li class="col01">{{ forloop.counter }}</li>
-                <li class="col02"><img src="/static/media/{{ cart.goods.gpic }}"></li>
-                <li class="col03">{{ cart.goods.gtitle|truncatechars:'15' }}</li>
-                <li class="col04">{{ cart.goods.gunit }}</li>
-                <li class="col05">{{ cart.goods.gprice }}</li>
-                <li class="col06">{{ cart.count }}</li>
-                <li class="col07"></li>
-            </ul>
+
+        {% for cart in cart_list %}
+		<ul class="goods_list_td clearfix">
+            <input type="hidden" name="cid" value="{{ cart.id }}">
+			<li class="col01">{{ forloop.counter }}</li>
+			<li class="col02"><img src="/static/media/{{ cart.goods.gpic }}"></li>
+			<li class="col03">{{ cart.goods.gtitle|truncatechars:'15' }}</li>
+			<li class="col04">{{ cart.goods.gunit }}</li>
+			<li class="col05">{{ cart.goods.gprice }}元</li>
+			<li class="col06">{{ cart.count }}</li>
+			<li class="col07">{{ cart.goods.gprice }}</li>
+		</ul>
         {% endfor %}
 	</div>
 
@@ -98,17 +87,18 @@
 
 	<div class="common_list_con clearfix">
 		<div class="settle_con">
-			<div class="total_goods_count">共<em>{{ length }}</em>件商品，总金额<b>42.60元</b></div>
-			<div class="transit">运费：<b>10元</b></div>
-			<div class="total_pay">实付款：<b>52.60元</b></div>
+			<div class="total_goods_count">共<em>0</em>件商品，总金额<b>0元</b></div>
+			<div class="transit">运费：<b>0元</b></div>
+			<div class="total_pay">实付款：<b>0</b></div>
 		</div>
 	</div>
 
 	<div class="order_submit clearfix">
-{#		<a href="javascript:;" id="order_btn">提交订单</a>#}
-        <input type="submit" value="提交订单">
+        <input type="submit" value="提交订单" id="order_btn">
 	</div>	
- </form>
+   </form>
+
+
 	<div class="popup_con">
 		<div class="popup">
 			<p>订单提交成功！</p>
@@ -116,44 +106,21 @@
 		
 		<div class="mask"></div>
 	</div>
-	<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+
 	<script type="text/javascript">
-		$(function () {
-            //小计
-            var value3 = 0;
-            //总计
-            var tolal = 0;
-            $('.col07').each(function () {
-                var value1 = $(this).prev().html();
-                var value2 = $(this).prev().prev().html();
-                value3 = (parseFloat(value1)*parseFloat(value2)).toFixed(2);
-                $(this).html(value3+"元");
+		$('#order_btn').click(function() {
+			localStorage.setItem('order_finish',2);
 
-                tolal += parseFloat(value3);
-                console.log(tolal);
-            });
+			$('.popup_con').fadeIn('fast', function() {
 
-            $('.total_goods_count b').html(tolal.toFixed(2)+"元");
-            //实付款
-            var pay = tolal + 10;
-            $('.total_pay b').html(pay.toFixed(2)+"元");
-
-            //点击提交处理
-		    $('#order_btn').click(function() {
-                localStorage.setItem('order_finish',2);
-                $.get('/tt_order/order_list/',function (data) {
-                    if(data.ok == 'ok'){
-                        $('.popup_con').fadeIn('fast', function() {
-                            setTimeout(function(){
-                                $('.popup_con').fadeOut('fast',function(){
-                                    window.location.href = '/tt_order/all_order/';
-                                });
-                            },3000)
-                        });
-                    }
-                });
-            });
-        });
+				setTimeout(function(){
+					$('.popup_con').fadeOut('fast',function(){
+						window.location.href = '/user/user_center_order/';
+					});	
+				},3000)
+				
+			});
+		});
 	</script>
 
-{% endblock body %}
+{% endblock center %}

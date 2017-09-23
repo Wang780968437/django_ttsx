@@ -11,6 +11,8 @@ from .models import *
 from . import user_decorator
 from . import task
 from tt_goods.models import *
+from tt_order.models import *
+from django.core.paginator import Paginator,Page
 
 # Create your views here.
 
@@ -87,7 +89,13 @@ def user_center_info(request):
 # 用户所有订单
 @user_decorator.login
 def user_center_order(request):
-    context = {'title':'用户中心'}
+    pindex = request.GET.get('page', '1')
+    uid = int(request.session.get('user_id'))
+    orders = OrderInfo.objects.filter(user_id = uid).order_by('oIsPay','-oid')
+    paginator = Paginator(orders, 2)
+    page = paginator.page(int(pindex))
+
+    context = {'title':'用户中心', 'page':page}
     return render(request, 'ttsx_user/user_center_order.html',context)
 
 # 用户地址信息

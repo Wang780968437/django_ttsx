@@ -15,11 +15,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='OrderDetailInfo',
             fields=[
-
-
-
                 ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
-                ('price', models.DecimalField(decimal_places=2, max_digits=5)),
+                ('price', models.DecimalField(max_digits=5, decimal_places=2)),
                 ('count', models.IntegerField()),
                 ('goods', models.ForeignKey(to='tt_goods.GoodsInfo')),
             ],
@@ -27,12 +24,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='OrderInfo',
             fields=[
-
-
-                ('oid', models.CharField(serialize=False, primary_key=True, max_length=20)),
+                ('oid', models.CharField(max_length=50, serialize=False, primary_key=True)),
                 ('odate', models.DateTimeField(auto_now_add=True)),
                 ('oIsPay', models.BooleanField(default=False)),
-                ('ototal', models.DecimalField(decimal_places=2, max_digits=6)),
+                ('ototal', models.DecimalField(max_digits=6, decimal_places=2)),
                 ('oaddress', models.CharField(max_length=150)),
                 ('user', models.ForeignKey(to='ttsx_user.UserInfo')),
             ],
